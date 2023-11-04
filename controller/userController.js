@@ -10,6 +10,7 @@ const getLogin=async (req,res)=>{
     
     if(req.session.user){
     res.redirect('/')
+    console.log(req.session.user)
     }else{
         const errMsgLogin=req.session.errMsgLogin
         res.render("user/user_login",{title:"Login page",errMsgLogin})
