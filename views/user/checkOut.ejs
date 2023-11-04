@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <title>Cart</title>
+</head>
+
+<body>
+    <a href="/"><button class="btn btn-dark">Go back to home</button></a>
+    <section class="h-100 gradient-custom">
+        
+        <div class="container py-5">
+            <form id="checkoutForm" onsubmit="event.preventDefault(); confirmOrder()">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Total Bill</h5>
+                                
+                            </div>
+                            
+                            <div class="card-body">
+                                <%if(user.address){%>
+                                    <div class="form-group">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="userAddress" >Select Address</label>
+                                                    <select id="userAddress" required name="userAddress"
+                                                        class="form-control dropDown-address" style="height: 40px;">
+                                                        <% for(let i=0; i< user.address.length; i++) { %>
+                                                            <option name="userAddress" value="<%= user.address[i]._id %>">
+                                                                <%= user.address[i].newname %> <%= user.address[i].house %>,<%= user.address[i].city %>,<%= user.address[i].district %>, <%= user.address[i].state %>,
+                                                                        <%= user.address[i].post %><%= user.address[i].contact %>
+                                                            </option>
+                                                            <% } %>
+        
+        
+        
+                                                    </select>
+                                                    
+                                                    <br>
+                                                    <a href="/userInfo" class="btn btn-info">For add address</a>
+                                                    <br>
+                                                    <br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <%}%>
+                                <% let Total=0; %>
+                                    <% if (user && user.cart && user.cart.length> 0) { %>
+                                        <% for (let i=0; i < user.cart.length; i++) { %>
+                                            <% const item=user.cart[i]; %>
+                                                <!-- Single item -->
+                                                <div class="row mb-4">
+                                                    <div class="col-lg-3 col-md-4 col-sm-12">
+                                                        <!-- Image -->
+                                                        <div class="bg-image hover-overlay hover-zoom ripple rounded"
+                                                            data-mdb-ripple-color="light">
+                                                            <img src="/upload/<%= item.product.images[0] %>"
+                                                                class="w-100" alt="Product Image" />
+                                                            <!-- <a href="#!">
+                                                                <div class="mask"
+                                                                    style="background-color: rgba(251, 251, 251, 0.2)">
+                                                                </div>
+                                                            </a> -->
+                                                        </div>
+                                                        <input type="hidden" value="<%= item.product._id %>"
+                                                        name="product">
+                                                        <!-- Image -->
+                                                    </div>
+                                                    <div class="col-lg-5 col-md-6 col-sm-12">
+                                                        <!-- Data -->
+                                                        <p><strong>Name: <%= item.product.title %></strong></p>
+                                                        <p>Color: <%= item.color %>
+                                                            <input type="hidden" name="color" value="<%= item.color %>">
+                                                        </p>
+                                                        <p>Size: <%= item.size %>
+                                                            <input type="hidden" name="size" value="<%= item.size %>">
+                                                        </p>
+                                                        <p>Price: <%= item.price %>
+                                                            <input type="hidden" name="price" value="<%= item.price %>">
+                                                        </p>
+                                                        <p>Quantity: <%= item.quantity %>
+                                                            <input type="hidden" name="quantity" value="<%= item.quantity %>">
+                                                        </p>
+                                                    </div>
+                                                    <!-- Price -->
+                                                    <div class="col-lg-4 col-md-2 col-sm-12 text-center">
+                                                        <p>Total $ <%= item.total %>/-</p>
+                                                        
+                                                    </div>
+                                                </div>
+                                                <!-- Single item -->
+                                                <% Total +=item.price * item.quantity; %>
+                                                    <% } %>
+                                                    <% } %>
+                                                       
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p>your wallet <i class="bx bx-wallet"> <%=parseInt(user.wallet.balance)%></i></p>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Payment</h5>
+                            </div>
+                            <div class="card-body d-flex justify-content-evenly">
+                                <label for="cod"><input id="cod" name="payment" value="COD" required type="radio">COD</label>
+                                <label for="ONLINE"><input id="ONLINE" name="payment" value="ONLINE" required type="radio">ONLINE</label>
+                                <label for="wallet"><input id="wallet" name="payment" value="wallet" required type="radio">Use Wallet</label>
+                            </div>
+                            
+
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <input type="text" id="coupon" name="coupon" placeholder="Enter your coupon code"
+                              style="border: 1px solid #ccc; border-radius: 10px; padding: 8px; background-color: #f5f5f5;">
+                              
+                              
+                            <button id="applyCouponBtn" class="btn btn-outline-dark" id="applyCouponBtn" type="button"
+                              style="border-radius: 10px; margin-left: 10px; letter-spacing: 1px; padding: 8px 15px; background-color: #333; color: #fff;">Apply</button>
+                              <input type="hidden" id="discountInput" name="discountInput" value="">
+                              <input type="hidden" id="discountedPrice" name="discountedPrice" value="">
+                              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#coupons">
+                                coupons
+                              </button>
+                              <span id="alert_tag"></span>
+                              <!-- Modal -->
+                              <div class="modal fade" id="coupons" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h1 class="modal-title fs-5" id="exampleModalLabel">available coupons</h1>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <ul>
+                                            
+                                          <% coupons.forEach(coupon => { %>
+                                            <li>
+                                              <strong>Coupon Code:</strong> <%= coupon.code %><br>
+                                              <strong>Type:</strong> <%= coupon.type %><br>
+                                              <strong>Expiration Date:</strong> <%= coupon.expireDate.toLocaleDateString() %><br>
+                                              <!-- Add more coupon details as needed -->
+                                            </li>
+                                            <hr>
+                                          <% }); %>
+                                        </ul>
+                                      </div>
+                                      
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                      <button type="button" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </div>
+
+                          <br>
+                        <div class="card mb-4">
+                            <div class="card-header py-3">
+                                <h5 class="mb-0">Summary</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="subtotal">
+                                    <p id="discount"></p>
+                                    <p>Total</p>
+                                    <p><span id="totalCart">$ <%= Total %>/-</span></p>
+                                    <input type="hidden" id="total" name="totalAmount" value="<%= Total %>">
+
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block" >
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </section>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>    
+<script>
+
+      function  confirmOrder() {
+    //     const formElement = document.getElementById('checkoutForm');
+    // const formData = new FormData(formElement);
+    fetch("/checkOut", {
+                method: "POST",
+                body: new URLSearchParams($('#checkoutForm').serialize()),
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            })
+                .then(response => response.json())
+                .then(res => {
+                    if (res.codSuccess) {
+                        Swal.fire({
+                icon: 'success',
+                title: 'Order Placed Successfully!',
+                text: 'Thank you for your order.',
+                confirmButtonText: 'OK'
+            });
+    
+                    } else if (res.razorSuccess) {
+
+
+
+                        console.log('inside front < ===========================');
+
+
+                        
+                        const order = {
+                            "key": "" + res.key_id + "",
+                            "amount": "" + res.amount + "",
+                            "currency": "INR",
+                            "name": "" + res.name + "",
+                            "prefill": {
+                                "contact": "" + res.contact + "",
+                                "name": "" + res.name + "",
+                                "email": "" + res.email + ""
+                            },
+                            "handler": function (response) {
+                                // alert("paymentDone")
+                                console.log("verfy")
+                                verifyPayment() 
+()
+                                updateOrderStatus(res.orderId, "paid");
+                            },
+
+                        }
+                        console.log('<<<<<<<<<<<<<<<<<<<<<<<<');
+
+                        const razorpay = new Razorpay(order);
+
+                        const done = razorpay.open();
+
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+        }   
+
+        // =================
+        function verifyPayment() {
+            console.log("error ")
+            fetch("/verify-payment", {
+                method: "POST",
+                body: new URLSearchParams($('#checkoutForm').serialize()),
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        // Handle success, e.g., show a modal or redirect
+                        window.location.href = ''
+                    } else {
+                        // Handle error
+                        console.error("Payment verification failed");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error while verifying payment:", error);
+                });
+        }
+
+</script>
+
+
+
+<script>
+    
+    document.getElementById('applyCouponBtn').addEventListener('click', async () => {
+                const selectedCoupon = document.getElementById('coupon').value;
+                const total= document.getElementById('total');
+                // const prevTotal = document.getElementById('prevTotal').value
+
+
+                const discountElement = document.getElementById('discount');
+                // const subtotalElement = document.getElementById('Total');
+                // subtotalElement.style.fontFamily = '"Courier New", monospace';
+                // discountElement.style.fontFamily = '"Courier New", monospace';
+                const discountInput = document.getElementById('discountInput');
+
+                console.log("jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj")
+
+                // Send a request to your server to apply the selected coupon
+                const response = await fetch('/applyCoupon', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ couponCode: selectedCoupon, total: total.value }),
+                });
+
+                const data = await response.json();
+
+                console.log(data)
+                if (data.success) {
+                  // Update the displayed subtotal with the discounted price
+                  document.getElementById('totalCart').innerHTML = `<b>Total: ₹ ${data.discountedPrice}</b>`;
+                  document.getElementById('alert_tag').innerHTML = `${data.message}`;
+                  
+                  
+                  discountElement.innerHTML = `<b>Discount: ₹ -${data.discount}<b>`;
+                    
+                    discountInput.value = data.discount;
+                    let discount=document.getElementById('discountedPrice').value = data.discountedPrice; // Update the totalamount field
+                    console.log(discount)
+                } else {
+                  // Display an error message for invalid coupons
+                  document.getElementById('alert_tag').innerHTML = `${data.message}`;
+                }
+              });
+</script>
+
+             
+
+
+
+
+
+
+
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+</html>

@@ -1,0 +1,89 @@
+<%-include('../header')-%>
+<style>
+    .box{
+		height: 380px;
+		
+	}
+	.red{
+		color:rgb(255, 49, 49);
+	}
+</style>
+	<div class="box">
+		<h2>OTP sended</h2>
+		<form action="/confirmOtp" method="post">
+			<%if(massage){%>
+				<div class="alert alert-warning text-center">
+					<p class="red"><%=massage%><p>
+				</div>
+				<%}%>
+				<br>
+				<%if(errorMessages){%>
+					<div class="alert alert-warning text-center">
+						<p class="red"><%=errorMessages%><p>
+					</div>
+					<%}%>
+				<br>
+			<div class="inputBox">
+				<input type="tel" name="otp" required="">
+				<input type="hidden" id="email" name="email" value="<%=email%>">
+				<label>Enter OTP</label>
+			</div>
+			<input type="submit" name="" value="submit">
+		</form>
+		
+		<button class="btn btn-warning" id="resendTimer" onclick="startResendOTPTimer(120, 'resendTimer')" disabled>Resend OTP</button>
+		<h4>Back to login? <a href="/">click</a></h4>
+	</div>
+	<script>
+		function startResendOTPTimer(duration, displayElementId) {
+		let timer = duration;
+		const displayElement = document.getElementById(displayElementId);
+	
+		const countdownInterval = setInterval(function () {
+			const minutes = Math.floor(timer / 60);
+			const seconds = timer % 60;
+	
+			displayElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+	
+			if (--timer < 0) {
+				clearInterval(countdownInterval);
+				displayElement.textContent = "Resend OTP";
+				displayElement.disabled = false; // Enable the button after timer ends
+			}
+		}, 1000);
+	}
+	
+	
+	
+	// Usage
+	const duration = 120; // Duration in seconds (2 minutes in this example)
+	const displayElementId = "resendTimer"; // ID of the element where timer will be displayed
+	
+	// Call the function with duration and element ID
+	startResendOTPTimer(duration, displayElementId);
+	
+	
+	document.getElementById("resendTimer").addEventListener("click", function() {
+		const email = document.getElementById('email').value;
+		const data = {
+			email: email
+		};
+	
+		fetch('/resendOtp', {
+			method: 'POST', // Use POST for sending data
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data) // Convert the data to JSON
+		})
+		.then(response => response.json())
+		.then(data => {
+			// Handle the response data as needed
+		})
+		.catch((error) => {
+			console.error('Error:', error);
+		});
+	});
+	
+	</script>
+	<%-include('../footer')-%>

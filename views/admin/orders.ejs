@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Admin Orders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .btn.btn-dark {
+            background-color: #333;
+            color: white;
+        }
+
+        .btn.btn-danger {
+            background-color: #d9534f;
+            color: white;
+        }
+
+        .btn.btn-info {
+            background-color: #5bc0de;
+            color: white;
+        }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/admin"><button class="btn btn-dark">Back to Dashboard</button></a>
+    <h1>Admin Orders</h1>
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table text-center table table-dark table-bordered table-striped">
+            <tr>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Order ID</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Customer</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">payment method</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Total Amount</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Status</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Order Date</th>
+                <th scope="col" class="col-md-1" style="font-weight: 500;background-color: #000000;color: #E5E5E5;">Address</th>
+            </tr>
+            <% order.forEach(ord => { %>
+            <tr>
+                <td><%= ord.orderId %></td>
+                <td><%= ord.address[0].name %></td>
+                <td><%=ord.payment%></td>
+                <td>$<%= ord.totalAmount.toFixed(2) %></td>
+                <td>
+                    <div class="btn-container">
+                        <form action="/admin/orders/<%= ord._id %>/change-status" method="POST">
+                            <select name="newStatus">
+                              <option value="Order Pending" <% if (ord.status === "Order Pending") { %> selected <% } %>>Order Pending</option>
+                              <option value="Delivered" <% if (ord.status === "Delivered") { %> selected <% } %>>Delivered</option>
+                              <option value="Cancelled" <% if (ord.status === "Cancelled") { %> selected <% } %>>Cancelled</option>
+                              <option value="shipped" <% if (ord.status === "shipped") { %> selected <% } %>>shipped</option>
+                              <option value="shipped" <% if (ord.status === "shipped") { %> selected <% } %>>return</option>
+                              <!-- Add more status options as needed -->
+                            </select>
+                            <button type="submit" class="btn btn-info">Update Status</button>
+                          </form>
+                          
+                    </div>
+                </td>
+                <td><%= ord.orderDate.toLocaleString() %></td>
+                <td>
+                    <%= ord.address[0].name %><br>
+                    <%= ord.address[0].house %><br>
+                    <%= ord.address[0].city %>, <%= ord.address[0].state %><br>
+                    <%= ord.address[0].district %><br>
+                    Contact: <%= ord.address[0].contact %>
+                </td>
+            </tr>
+            <% }); %>
+        </table>
+    </div>
+
+
+
+</html>

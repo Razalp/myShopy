@@ -1,0 +1,32 @@
+<%-include('../header')-%>
+<style>
+	.box{
+		height: 360px;
+		
+	}
+	.red{
+		color:rgb(255, 49, 49);
+	}
+</style>
+	<div class="box">
+		<h2>Admin Login</h2>
+		<%if(errmsg){%>
+			<div class="alert alert-warning text-center">
+				<p class="red"><%=errmsg %></p>
+			</div>
+			<%}%>
+			<br>
+		<form action="/admin" method="post">
+			
+			<div class="inputBox">
+				<input type="email" name="email" required="">
+				<label>Username</label>
+			</div>
+			<div class="inputBox">
+				<input type="password" name="password" required="">
+				<label>Password</label>
+			</div>
+			<input type="submit" value="submit">
+		</form>
+	</div>
+	<%-include('../footer')-%>

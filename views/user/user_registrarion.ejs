@@ -1,0 +1,131 @@
+<%-include('../header')-%>
+<style>
+  .box {
+    height: 720px;
+    top: 50%;
+  }
+  .red {
+    color: rgb(255, 49, 49);
+  }
+ 
+  .alert {
+    background-color: #f2dede; /* Background color for the alert */
+    border: 1px solid #ebccd1; /* Border color */
+    color: #a94442; /* Text color */
+    padding: 10px;
+    border-radius: 5px; /* Rounded corners */
+    margin-top: 10px; /* Add some space between the alert and form elements */
+  }
+
+</style>
+<div class="box">
+  <h2>User Registration</h2>
+  <form action="/user_registration" method="post" id="myForm">
+    <% if (errs) { %>
+    <div class="alert">
+      <p class="red"><%= errs %></p>
+    </div>
+    <% } %>
+    <br>
+    <div class="inputBox">
+      <input type="text" name="name" required id="name">
+      <label>Username</label>
+    </div>
+
+    <div class="inputBox">
+      <input type="email" name="email" required id="email">
+      <label>Email</label>
+    </div>
+
+    <div class="inputBox">
+      <input type="tel" name="mobile" required id="mobile">
+      <label>Mobile No</label>
+    </div>
+
+    <div class="inputBox">
+      <input type="password" name="password" required id="password">
+      <label>Password</label>
+    </div>
+    <div class="inputBox">
+      <input type="password" name="confirm_password" required id="confirm_password">
+      <label>Confirm Password</label>
+    </div>
+
+    <input type="submit" name="" value="Submit">
+  </form>
+  <h5>Register Using</h5>
+  <ul>
+    <li>
+      <a href="#">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <i class="fa fa-google"></i>
+      </a>
+    </li>
+  </ul>
+  <h4>Already have an account? <a href="/login">Login</a></h4>
+</div>
+
+<script>
+  const form = document.getElementById('myForm');
+  const nameInput = document.getElementById('name');
+  const emailInput = document.getElementById('email');
+  const mobileInput = document.getElementById('mobile');
+  const passwordInput = document.getElementById('password');
+  const confirmPasswordInput = document.getElementById('confirm_password');
+
+  // Regular expression for email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  form.addEventListener('submit', function (event) {
+    let isValid = true;
+
+    if (nameInput.value.trim() === '') {
+      Swal.fire('Name is required');
+      isValid = false;
+    }
+
+    if (emailInput.value.trim() === '') {
+      Swal.fire('Email is required');
+      isValid = false;
+    } else if (!emailRegex.test(emailInput.value.trim())) {
+      Swal.fire('Invalid email format');
+      isValid = false;
+    }
+
+    if (mobileInput.value.trim() === '') {
+      Swal.fire('number is required!')
+      isValid = false;
+    } else if (mobileInput.value.trim().length < 10) {
+      Swal.fire('mobile 10 digits required!')
+      isValid = false;
+    }
+
+    if (passwordInput.value.trim() === '') {
+      Swal.fire('Password is required');
+      isValid = false;
+    }
+
+    if (passwordInput.value !== confirm_password.value) {
+      Swal.fire('Passwords do not match');
+      isValid = false;
+    }
+
+    if (!isValid) {
+      event.preventDefault(); // Prevent form submission if there are validation errors
+    }
+  });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%-include('../footer')-%>

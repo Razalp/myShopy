@@ -1,0 +1,82 @@
+<%-include('../header')-%>
+<style>
+	.red{
+		color:rgb(255, 49, 49);
+	}
+	
+</style>
+	<div class="box">
+		<h2>Login</h2>
+		
+		<form action="/login" method="post" id="loginForm">
+			<%if(errMsgLogin){%>
+				<div class="alert alert-warning text-center">
+					<p class="red"><%=errMsgLogin%></p>
+				</div>
+				<%}%>
+				
+			<div class="inputBox">
+				<input type="email" name="email" required="">
+				<label>Username</label>
+			</div>
+			<div class="inputBox">
+				<input type="password" name="password" required="">
+				<label>Password</label>
+			</div>
+			<input type="submit" name="" value="submit">
+		</form>
+		<a href="forget_password" class="a">Forget Password</a>
+		<h5>Sign Up Using</h5>
+		<ul>
+			<li>
+			<a href="#">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<i class="fa fa-facebook"></i>
+			</a>
+		</li>
+		<li>
+			<a href="#">
+				<span></span>
+				<span></span>
+				<span></span>
+				<span></span>
+				<i class="fa fa-google"></i>
+			</a>
+		</li>
+		</ul>
+		<h4>Create account? <a href="/user_registration">Sign Up</a></h4>
+	</div>
+	<script>
+		const form = document.getElementById('loginForm');
+		const emailInput = document.getElementById('email');
+		const passwordInput = document.getElementById('password');
+		
+		// Regular expression for email validation
+		const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	  
+		form.addEventListener('submit', function (event) {
+		  let isValid = true;
+	  
+		  if (emailInput.value.trim() === '') {
+			Swal.fire('Email is required');
+			isValid = false;
+		  } else if (!emailRegex.test(emailInput.value.trim())) {
+			Swal.fire('Invalid email format');
+			isValid = false;
+		  }
+	  
+		  if (passwordInput.value.trim() === '') {
+			Swal.fire('password required')
+			isValid = false;
+		  }
+	  
+		  if (!isValid) {
+			event.preventDefault(); // Prevent form submission if there are validation errors
+		  }
+		});
+	  </script>
+	  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<%-include('../footer')-%>

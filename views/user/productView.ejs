@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="path/to/magnify.css">
+    <style>
+        /* Custom CSS styles */
+        .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Center the images vertically */
+}
+
+.semi-image-container {
+    width: 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.semi-image {
+    max-width: 100%; /* Ensure images don't exceed their container */
+    cursor: pointer;
+}
+
+.main-image-container {
+    width: 100%;
+    max-width: 400px; /* Adjust the maximum width as needed */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.main-image {
+    max-width: 100%; /* Ensure the main image doesn't exceed its container */
+    max-height: 400px; /* Adjust the maximum height as needed */
+}
+
+.btn-increment-decrement {
+    width: 2rem;
+}
+
+/* Add zoom effect CSS */
+.zoomed {
+    transform: scale(3); /* Adjust the zoom level as needed */
+    transition: transform 0.4s; /* Adjust the transition duration as needed */
+}
+
+    </style>
+    <title>Product View</title>
+</head>
+<body>
+    <div class="container my-4">
+        <div class="row">
+            <div class="col-12">
+                <a href="/"><button class="btn btn-dark">Go to Home</button></a>
+            </div>
+            <% if (product) { %>
+            <!-- Product Images -->
+            <div class="col-md-6">
+                <div class="image-container mt-5">
+                    <div class="semi-image-container mr-1">
+                        <% for (let i = 0; i < product.images.length; i++) { %>
+                            <img src="/upload/<%= product.images[i] %>" alt="Product Image" class="semi-image" data-index="<%= i %>">
+                        <% } %>
+                    </div>
+                    <div class="main-image-container">
+                        <img src="" alt="Main Product Image" class="main-image">
+                        <!-- Add zoom in and out buttons -->
+                        <button class="btn btn-danger" id="zoom-in-button">Zoom In +</button>
+                        <button class="btn btn-danger" id="zoom-out-button">Zoom Out -</button>
+                    </div>
+                </div>
+            </div>
+            
+           
+                       
+            <!-- Product Info -->
+            <div class="col-md-6">
+                <h2>Product Name: <%= product.title %></h2>
+                <p class="mb-4">Product Description: <%= product.description %></p>
+                <p class="mb-4">Product Color: <%= product.color %></p>
+                <p class="mb-4">Product Category: <%= product.category %></p>
+                <p class="mb-4">Product for: <%= product.gender %></p>
+                <p class="mb-4">   
+                    <strong>Price:</strong> $<%= product.price %> <br>
+                    <input type="hidden" value='<%= product.price %>' id="price">
+                </p>
+                <!-- Size Buttons (Radio Buttons) -->
+                <div class="mb-4">
+                    <label class="form-label">Size</label>
+                    <% const sizes = ['S', 'M', 'L', 'XL']; %>
+                    <% sizes.forEach(size => { %>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="size" id="size<%= size %>" value="<%= size %>">
+                            <label class="form-check-label" for="size<%= size %>"><%= size %></label>
+                        </div>
+                    <% }); %>
+                </div>
+               
+                <!-- Quantity Increment and Decrement -->
+               
+                
+                <!-- Add to Cart and Wishlist Buttons -->
+                <%if(product.stock<=10){%>
+                    <p>product left <%=product.stock%></p>
+                <%}%>
+                <%if(product.stock< 1){%>
+                    <p class="text-warning">product out of stock </p>
+                    <button class="btn btn-primary mb-2" disabled>Add to Cart</button>
+
+                    <%}else{%>
+                        <%if(user){%>
+                        <button class="btn btn-primary mb-2" disabled id="addToCartButton" onclick="event.preventDefault(); addToCart('<%= product._id %>'); alertForAddToCart()">🛒 Add to Cart</button>
+  
+                        <%}else{%>
+                            <a href="/login" class="btn btn-primary mb-2"><i class="bx bx-lock">Add to Cart </i></a>
+<%}}%>
+
+
+                <button class="btn btn-secondary mb-2" onclick="event.preventDefault(); sample()">Add to Wishlist</button>
+                <br>
+                
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reviewSee">
+    <i class="bx bx-comment"> Review </i>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="reviewSee" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Review</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- <h3>Rating</h3> -->
+                
+                <% if (product.rating.length > 0) { %>
+                    <p>Average Rating: <i class="bx bx-star"><%= product.rating.reduce((acc, cur) => acc + cur.rate, 0) / product.rating.length %></i></p>
+                <% } else { %>
+                    <p>No reviews yet</p>
+                <% } %>
+                <!-- <!-- <h4>Reviews:</h4> -->
+                
+                <ul>
+                    <% product.rating.forEach(review => { %>
+                        <li>
+                            <p>User: <%= review.customer.name%></p>
+                            <p>:Rate <i class="bx bx-star"> <%= review.rate %> </i></p>
+                            <p>Review: <%= review.review %></p>
+                        </li>
+                    <% }); %>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%}%>
+
+    <!-- Bootstrap JS, Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"></script>
+    <script>
+  
+        function alertForAddToCart(){
+            Swal.fire('Add To Cart Successful!')
+    }
+    
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    // ... (your existing code)
+
+    // Get the "Add to Cart" button element
+    const addToCartButton = document.getElementById('addToCartButton');
+
+    // Get all size radio buttons
+    const sizeRadioButtons = document.querySelectorAll('input[name="size"]');
+
+    // Add an event listener to each size radio button
+    sizeRadioButtons.forEach(function (radioButton) {
+        radioButton.addEventListener('change', function () {
+            // Enable the "Add to Cart" button when a size is selected
+            addToCartButton.disabled = false;
+        });
+    });
+
+    // ... (rest of your code)
+});
+
+    </script>
+    
+
+    <script>
+        // JavaScript code for image gallery
+        document.addEventListener("DOMContentLoaded", function () {
+            const semiImageContainer = document.querySelector(".semi-image-container");
+            const mainImage = document.querySelector(".main-image");
+            
+            // Set the initial source of the main image to the first thumbnail image
+            const firstThumbnail = semiImageContainer.querySelector(".semi-image");
+            if (firstThumbnail) {
+                const firstImageURL = firstThumbnail.getAttribute("src");
+                showMainImage(firstImageURL);
+            }
+            
+            semiImageContainer.addEventListener("click", function (event) {
+                const clickedImage = event.target;
+                if (clickedImage.classList.contains("semi-image")) {
+                    const imageURL = clickedImage.getAttribute("src");
+                    showMainImage(imageURL);
+                }
+            });
+            
+            function showMainImage(imageURL) {
+                mainImage.setAttribute("src", imageURL);
+            }
+        });
+        
+        // Quantity increment and decrement
+        document.getElementById('button-increment').addEventListener('click', function() {
+            document.getElementById('quantity').value = parseInt(document.getElementById('quantity').value) + 1;
+        });
+        
+        document.getElementById('button-decrement').addEventListener('click', function() {
+            const quantityInput = document.getElementById('quantity');
+            if (parseInt(quantityInput.value) > 1) {
+                quantityInput.value = parseInt(quantityInput.value) - 1;
+            }
+        });
+        
+        function addToCart(productId) {
+    const selectedSizeInput = document.querySelector('input[name="size"]:checked');
+    const selectedSize = selectedSizeInput ? selectedSizeInput.value : null;
+    const price = document.getElementById('price').value;
+
+    const data = {
+        productId: productId,
+        size: selectedSize,
+        price: price
+    };
+
+    fetch(`/add-to-cart/${productId}`, {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+})
+.then(response => response.json()) // Parse the JSON response
+.then(data => {
+    if (data.success) {
+       // Fixed typo here
+       
+        // Update the cart or provide user feedback based on the data from the server
+        console.log('Product added to cart successfully.');
+        // You can update the cart UI or provide feedback here
+    } else {
+        console.error('Error adding product to cart:', data.error);
+    }
+})
+.catch(error => {
+    console.error('Error adding product to cart:', error);
+});
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+     <script>
+        // Wait for the DOM to be ready
+        document.addEventListener("DOMContentLoaded", function () {
+          // Get a reference to the main image and the zoom buttons
+          const mainImage = document.querySelector(".main-image");
+          const zoomInButton = document.getElementById("zoom-in-button");
+          const zoomOutButton = document.getElementById("zoom-out-button");
+      
+          // Initialize the zoom level
+          let zoomLevel = 1;
+          let zoomEnabled = true; // To control zoom-in button enable/disable
+      
+          // Attach a click event handler to the zoom in button
+          zoomInButton.addEventListener("click", function () {
+            if (zoomEnabled) {
+              // Zoom in by increasing the zoom level
+              zoomLevel += 0.2; // Adjust the increment as needed
+              mainImage.style.transform = `scale(${zoomLevel}`;
+      
+              // Check if it's the second click, and disable zoom-in
+              if (zoomLevel >= 2) {
+                zoomEnabled = false;
+                zoomInButton.disabled = true;
+              }
+            }
+          });
+      
+          // Attach a click event handler to the zoom out button
+          zoomOutButton.addEventListener("click", function () {
+            // Zoom out by decreasing the zoom level
+            zoomLevel -= 0.2; // Adjust the decrement as needed
+            if (zoomLevel < 1) {
+              zoomLevel = 1; // Ensure zoom level doesn't go below 1 (original size)
+            }
+            mainImage.style.transform = `scale(${zoomLevel}`;
+      
+            // Re-enable the zoom-in button
+            zoomEnabled = true;
+            zoomInButton.disabled = false;
+          });
+        });
+      </script>
+
+</body>

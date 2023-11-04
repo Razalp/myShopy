@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <!--===============================================================================================-->
+	<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+	<!--===============================================================================================-->
+  <title>User Info</title>
+</head>
+<body>  
+  <section style="background-color: #faeeee;">
+    <div class="container py-5">
+      <div class="row">
+        <div class="col">
+            <nav aria-label="breadcrumb" class="bg-light rounded-3 p-3 mb-4 d-flex justify-content-between">
+                <div class="breadcrumb">
+                    <a href="/"><button class="btn btn-dark"><i class="bx bx-arrow-back"> Go Home</i></button></a>
+                </div>
+                <div>
+                    <form action="/logout" method="post" class="d-sm-inline d-none">
+                      <button type="button" style="background-color: rgb(167, 4, 4); color: rgb(255, 255, 255);" class="btn text-muted d-sm-inline d-none" data-bs-toggle="modal" data-bs-target="#signOut">
+                        <i class="bx bx-log-in" style="color: white;"> Sign out </i>
+                        </button>
+                    </form>
+                    <!-- Modal -->
+  <div class="modal fade" id="signOut" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title " style="background-color: white; color: red;" id="exampleModalLabel">🛒</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h2> Are you sure 👋🏻</h2> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <form action="/logout" method="post">
+        <button type="submit" class="btn btn-danger"> <i class="bx bx-log-in"> Sign out </i></button>
+         </form>
+      </div>
+      </div>
+    </div>
+    </div>
+                </div>
+            </nav>
+        </div>
+        
+      </div>
+      <%if(users){%>
+        <% users.forEach((user, index) => { %>
+      <div class="row">
+        <div class="col-lg-4">
+          <div class="card mb-4">
+            <div class="card-body text-center">
+              <% if (user) { %>
+                <!-- Display the user's current profile picture if available -->
+                <% if (user.profileImage) { %>
+                  <img src="/upload/<%= user.profileImage %>" alt="avatar"
+                  class="rounded-circle img-fluid" style="width: 150px; height: 150px;">
+                <% } %>
+              
+                <form action="/updateProfilePicture" method="POST" enctype="multipart/form-data">
+                  <label for="profileImage">Choose a new profile picture:</label>
+                  <input type="file" name="profileImage" accept="image/*" required>
+                  <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+              <% } else { %>
+                <p>User not found. Please log in.</p>
+              <% } %>
+              
+             
+              <h5 class="my-3"><%=user.name%></h5>
+              <i class="bx bx-wallet"><%=parseInt(user.wallet.balance)%></i>
+              <!-- <p class="text-muted mb-1">Full Stack Developer</p>
+              <p class="text-muted mb-4">Bay Area, San Francisco, CA</p> -->
+              <div class="d-flex justify-content-center mb-2">
+               <a href="/orderHistory"> <button type="button" class="btn btn-info"> <i class="bx bx-shopping-bag">Orders </i></button></a>
+              <!-- Button trigger modal -->
+<button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+  wallet History
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">wallet History</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-body">
+          <% if (users) { %>
+            <% users.forEach(user=> { %>
+              <table>
+                <thead>
+                  <tr>
+                    <th>transition</th>
+                    <th>history</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><%= user.wallet.transactions %></td>
+                    <td><%= user.wallet.history %></td>
+                  </tr>
+                </tbody>
+              </table>
+            <% }) %>
+          <% } else { %>
+            <p>User not found</p>
+          <% } %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+      </div>
+    </div>
+  </div>
+</div>
+              </div>
+             
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Name</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%=user.name%></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Email</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%=user.email%></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Mobile</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0"><%=user.mobile%></p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">password</p>
+                </div>
+                <div class="col-sm-9">
+                  <p class="text-muted mb-0">*******</p>
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-sm-3">
+                  <p class="mb-0">Address</p>
+                </div>
+                <div class="row">
+                  <% for (let i = 0; i < user.address.length; i += 2) { %>
+                    <div class="col-md-6">
+                      <div class="">
+                        <p class="text-muted mb-0">name : <span class="text-left"><%= user.address[i].newname %></span></p>
+                        <p class="text-muted mb-0">house : <span class="text-left"><%= user.address[i].house %></span></p>
+                        <p class="text-muted mb-0">post : <span class="text-left"><%= user.address[i].post %></span></p>
+                        <p class="text-muted mb-0">city : <span class="text-left"><%= user.address[i].city %></span></p>
+                        <p class="text-muted mb-0">state : <span class="text-left"><%= user.address[i].state %></span></p>
+                        <p class="text-muted mb-0">district : <span class="text-left"><%= user.address[i].district %></span></p>
+                        <p class="text-muted mb-0">contact : <span class="text-left"><%= user.address[i].contact %></span></p>
+                      </div>
+                    </div>
+                
+                    <% if (i + 1 < user.address.length) { %>
+                      <div class="col-md-6">
+                        <div class="">
+                          <p class="text-muted mb-0">name : <span class="text-left"><%= user.address[i + 1].newname %></span></p>
+                          <p class="text-muted mb-0">house : <span class="text-left"><%= user.address[i + 1].house %></span></p>
+                          <p class="text-muted mb-0">post : <span class="text-left"><%= user.address[i + 1].post %></span></p>
+                          <p class="text-muted mb-0">city : <span class="text-left"><%= user.address[i + 1].city %></span></p>
+                          <p class="text-muted mb-0">state : <span class="text-left"><%= user.address[i + 1].state %></span></p>
+                          <p class="text-muted mb-0">district : <span class="text-left"><%= user.address[i + 1].district %></span></p>
+                          <p class="text-muted mb-0">contact : <span class="text-left"><%= user.address[i + 1].contact %></span></p>
+                        </div>
+                      </div>
+                    <% } %>
+                  <% } %>
+                </div>
+                
+                
+              </div>
+            </div>
+          </div>
+        <div>
+          <% if (user.address ) { %>
+            <!-- Button to trigger the modal for adding address -->
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+              <i class="bx bx-detail"> Add Address</i>
+            </button>
+          
+            <!-- Button to trigger the modal for editing address -->
+            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#editAddressModal">
+              Edit Address
+            </button>
+          
+            <!-- Button to trigger the modal for removing address -->
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"  data-bs-target="#removeAddressModal">
+              Remove Address
+            </button>
+          <% } %>
+          <br>
+          <br>
+          <form action="/logout" method="post">
+            <button type="submit" class="btn btn-danger d-flex "> <i class="bx bx-log-in"> Sign out </i></button>
+             </form>
+<!-- Remove Address Modal -->
+<div class="modal fade" id="removeAddressModal"  tabindex="-1" aria-labelledby="removeAddressModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="" onsubmit="removeAddress()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="removeAddressModalLabel">Remove Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to remove this address?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger" id="confirmRemoveAddress">Remove</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Edit Address Modal -->
+<div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editAddressModalLabel">Edit Address</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Create a form for editing the address -->
+        <form id="editAddressForm" onsubmit="editAddressForm ()">
+          <!-- Input fields for editing address fields -->
+          <div class="mb-3">
+            <label for="editNewname" class="form-label">Name</label>
+            <input type="text" class="form-control" id="editNewname" name="newname" value="<%= user.address && user.address[0] ? user.address[0].newname : '' %>">
+          </div>
+          <div class="mb-3">
+            <label for="editHouse" class="form-label">House</label>
+            <input type="text" class="form-control" id="editHouse" name="house" value="<%= user.address && user.address[0] ? user.address[0].house : '' %>">
+          </div>
+          <div class="mb-3">
+            <label for="editPost" class="form-label">Post</label>
+            <input type="text" class="form-control" id="editPost" name="post" value="<%= user.address && user.address[0] ? user.address[0].post : '' %>">
+          </div>
+          <!-- Add input fields for other address fields here -->
+        
+          <!-- Submit button to save changes -->
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function removeAddress() {
+    // Send an AJAX request to remove the address
+    fetch('/removeAddress', {
+      method: 'POST',
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response (e.g., show success message)
+        console.log(data);
+        // Close the modal
+        window.location.reload()
+        // $('#removeAddressModal').modal('hide');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+</script>
+
+<script>
+  function editAddressForm () {
+
+    // Get the form data
+    const formData = new FormData(this);
+
+    // Send an AJAX request to update the address
+    fetch('/updateAddress', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // Handle the response (e.g., show success message)
+        console.log(data);
+        // Close the modal
+        $('#editAddressModal').modal('hide');
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+</script>         <!-- Modal -->
+<div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Address</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addressForm" action="/addAddress" method="post" onsubmit="return validateForm()">
+          <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" name="newname" required>
+          </div>
+          <div class="mb-3">
+            <label for="house" class="form-label">House</label>
+            <input type="text" class="form-control" id="house" name="house" required>
+          </div>
+          <div class="mb-3">
+            <label for="post" class="form-label">Post</label>
+            <input type="number" class="form-control" id="post" name="post" required>
+          </div>
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <input type="text" class "form-control" id="city" name="city" required>
+          </div>
+          <div class="mb-3">
+            <label for="state" class="form-label">State</label>
+            <input type="text" class="form-control" id="state" name="state" required>
+          </div>
+          <div class="mb-3">
+            <label for="district" class="form-label">District</label>
+            <input type="text" class="form-control" id="district" name="district" required>
+          </div>
+          <div class="mb-3">
+            <label for="contact" class="form-label">Contact</label>
+            <input type="number" class="form-control" id="contact" name="contact" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-dark"><i class="bx bxl-ok-ru"> submit </i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+        <%})}%>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Button trigger modal -->
+
+  <script>
+    function validateForm() {
+      let isValid = true;
+    
+      const nameInput = document.getElementById('name');
+      const houseInput = document.getElementById('house');
+      const postInput = document.getElementById('post');
+      const cityInput = document.getElementById('city');
+      const stateInput = document.getElementById('state');
+      const districtInput = document.getElementById('district');
+      const contactInput = document.getElementById('contact');
+    
+      if (nameInput.value.trim() === '') {
+        Swal.fire('Name is required');
+        isValid = false;
+      }
+    
+      if (houseInput.value.trim() === '') {
+        Swal.fire('House is required');
+        isValid = false;
+      }
+    
+      if (postInput.value.trim() === '') {
+        Swal.fire('Post is required');
+        isValid = false;
+      }
+    
+      if (cityInput.value.trim() === '') {
+        Swal.fire('City is required');
+        isValid = false;
+      }
+    
+      if (stateInput.value.trim() === '') {
+        Swal.fire('State is required');
+        isValid = false;
+      }
+    
+      if (districtInput.value.trim() === '') {
+        Swal.fire('District is required');
+        isValid = false;
+      }
+    
+      if (contactInput.value.trim() === '') {
+        Swal.fire('Contact is required');
+        isValid = false;
+      }
+    
+      return isValid;
+    }
+  </script>
+  
+  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

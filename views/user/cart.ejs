@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Cart</title>
+</head>
+<body>
+  <a href="/"><button class="btn btn-dark">go back to home</button></a>
+    <section class="h-100 gradient-custom">
+        <div class="container py-5">
+          <div class="row d-flex justify-content-center my-4">
+            <div class="col-md-8">  
+              <div class="card mb-4">
+                <div class="card-header py-3">
+                  <h5 class="mb-0">Cart</h5>
+                </div>
+                <div class="card-body">
+                  <% let totalCartPrice = 0; %>
+                  <% if (user && user.cart && user.cart.length > 0) { %>
+
+                    <% for (let i = 0; i < user.cart.length; i++) { %>
+                      <% const item = user.cart[i]; %>
+
+
+                     <% const productTotalPrice = parseFloat(item.price) * parseInt(item.quantity); %>
+                      <% totalCartPrice +=productTotalPrice; %>
+                      <!-- Single item -->
+                      <div class="row mb-4">
+                        <div class="col-lg-3 col-md-12">
+                          <!-- Image -->
+                          <div class="bg-image hover-overlay hover-zoom ripple rounded" data-mdb-ripple-color="light">
+                            <img src="/upload/<%= item.product.images[0] %>" class="w-100" alt="Product Image" />
+                            <a href="#!">
+                              <div class="mask" style="background-color: rgba(251, 251, 251, 0.2)"></div>
+                            </a>
+                          </div>
+                          <!-- Image -->
+                        </div>
+                        <div class="col-lg-5 col-md-6">
+                          <!-- Data -->
+                          <p><strong>Name: <%= item.product.title %></strong></p>
+                          <p>Color: <%= item.color %></p>
+                          <p>Size: <%= item.size %></p>
+                          <!-- Quantity -->
+                          <div class="d-flex" style="max-width: 300px">
+                            <button class="btn btn-primary px-3 me-2" onclick="decreaseQuantity('<%=item.product._id%>')">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <div class="form-outline">
+                              <p class="quantity" data-product-id="<%= item.product._id %>">
+                                <%= item.quantity %>
+                              </p>
+                               
+                            </div>
+                            <button class="btn btn-primary px-3 ms-2" onclick="increaseQuantity('<%=item.product._id%>')">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    
+                        <!-- Price -->
+                        <div class="d-flex justify-content-center">
+                          <p>
+                            Total
+                          <div class="w-50 d-flex justify-content-end priceForQty" data-product="<%=item.product._id%>" id="singleprdprice">
+                           $ <%= item.price * item.quantity %>/-
+                          </div>
+                                                </p>
+                        </div>
+
+      
+                        </div>
+                        <div class="col-lg-1 col-md-1">
+                          <!-- Close button -->
+                          <form action="/cart/remove" method="POST">
+                            <input type="hidden" name="productId" value="<%= item.product._id %>" />
+                            <button type="submit" class="btn btn-danger btn-close" onclick=""></button>
+                          </form>
+                          <!-- Close button -->
+                        </div>
+                      </div>
+                      <!-- Single item -->
+                    <% } %>
+                  <% } else { %>
+                    <p>Your cart is empty.</p>
+                  <% } %>
+                </div>
+                
+                  
+                 
+      
+                   
+                
+              <div class="card mb-4">
+                <div class="card-body">
+                  <p><strong>Expected shipping delivery</strong></p>
+                  <p class="mb-0">12.10.2020 - 14.10.2020</p>
+                </div>
+              </div>
+              <div class="card mb-4 mb-lg-0">
+                <div class="card-body">
+                  <p><strong>We accept</strong></p>
+                  <img class="me-2" width="45px"
+                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/visa.svg"
+                    alt="Visa" />
+                  <img class="me-2" width="45px"
+                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/amex.svg"
+                    alt="American Express" />
+                  <img class="me-2" width="45px"
+                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce-gateway-stripe/assets/images/mastercard.svg"
+                    alt="Mastercard" />
+                  <img class="me-2" width="45px"
+                    src="https://mdbcdn.b-cdn.net/wp-content/plugins/woocommerce/includes/gateways/paypal/assets/images/paypal.webp"
+                    alt="PayPal acceptance mark" />
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card mb-4">
+                <div class="card-header py-3">
+                  <h5 class="mb-0">Summary</h5>
+                </div>
+                <div class="card-body">
+
+
+       <div class="cart_actions">
+        <div class="subtotal">
+          <p>subtotal</p>
+          <p><span id="totalCart">
+             ₹ <%= totalCartPrice %>/-
+            </span></p>
+        </div>
+
+       
+
+      </div>
+      
+      <% if (user && user.cart && user.cart.length > 0) { %>
+        <a href="/checkOut" class="btn btn-dark">Proceed to checkout</a>
+      <% } else { %>
+        <a href="/" class="btn btn-dark">Go back to home</a>
+      <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+
+      <script>
+
+        function updateQuantity(productId, action) {
+          fetch("/update-quantity", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            productId: productId,
+            action: action,
+          }),
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json(); // Parse the response body as JSON
+        })
+        .then(data => {
+          // This is the data received from the server
+          // Access 'success' and 'quantity' properties from 'data'
+          const { success, quantity, total } = data;
+          console.log(data); // 'true' if the request was successful
+          const quantityElement = document.querySelector(`.quantity[data-product-id="${productId}"]`);
+            quantityElement.textContent = quantity;
+        
+            // Update price
+            const priceElement = document.querySelector(`.priceForQty[data-product="${productId}"]`);
+            priceElement.textContent = `₹ ${total}/-`;
+          // document.getElementById('singleprdprice').innerHTML=`₹ ${quantity*singleprd}`
+          let updatedTotalAmount = 0;
+        const prdsTotal = document.getElementsByClassName("priceForQty");
+        
+        for (let i = 0; i < prdsTotal.length; i++) {
+          const priceText = prdsTotal[i].textContent;
+          const price = parseFloat(priceText.replace("₹", "").replace("/-", ""));
+          updatedTotalAmount += price;
+        }
+        
+        const totalCartElement = document.getElementById('totalCart');
+        totalCartElement.textContent = `₹ ${updatedTotalAmount.toFixed()}/-`;
+                        // $("#totalCart").text("₹" + updatedTotalAmount.toFixed(2) + "/-");
+         
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+        }
+        
+        
+        
+        // Plus button click event
+        function increaseQuantity(productId) {
+          updateQuantity(productId, "increase");
+        }
+        
+        // Minus button click event
+        function decreaseQuantity(productId) {
+          updateQuantity(productId, "decrease");
+        }
+        
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+</html>
