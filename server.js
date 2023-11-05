@@ -7,7 +7,7 @@ const session = require('express-session');
 const { v4: uuidv4 } = require('uuid'); // Import the uuidv4 function
 const nocache =require('nocache');
 const mongoose=require('mongoose');
-const userRouter = require('./routes/userRoute');
+const userRouter = require('./routes/userRoute')
 const adminRouter = require('./routes/adminRoute'); 
 const User=require('./models/userModel')
 const morgan=require('morgan')
@@ -29,7 +29,7 @@ app.use(flash());
 
 //mongodb connection by using atlas;
 //password :JwqbvGD8AtCrLmU5
-    mongoose.connect("mongodb://127.0.0.1:27017/project").then(()=>{
+    mongoose.connect("mongodb+srv://razalp0012300:BStTdKuDLANiN5HI@cluster0.qizwbpq.mongodb.net/?retryWrites=true&w=majority&appName=AtlasApp").then(()=>{
     console.log("mongodb connected")
 })
 
