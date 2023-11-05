@@ -65,18 +65,36 @@ const product_details= async (req,res)=>{
     res.render('user/product-detail',{title:"page"})
 }
 
-const product=async (req,res)=>{
-    try{
-        const email=req.session.user
-        const user= await User.findOne({email:email});
-
-        const product=await Product.find({})
-        res.render('user/product',{title:"page",product,user})
-    }catch(error){
-        console.log(error)
+const product = async (req, res) => {
+    try {
+      const email = req.session.user;
+      const user = await User.findOne({ email: email });
+  
+      // Get the selected price range from the query parameter (e.g., ?priceRange=0-999)
+      const priceRange = req.query.priceRange;
+  
+      // Define the price range criteria based on the selected range
+      let priceCriteria = {};
+      if (priceRange === '0-999') {
+        priceCriteria = { price: { $gte: 0, $lte: 999 } };
+      } else if (priceRange === '1000-1999') {
+        priceCriteria = { price: { $gte: 1000, $lte: 1999 } };
+      } else if (priceRange === '2000-2999') {
+        priceCriteria = { price: { $gte: 2000, $lte: 2999 } };
+      } else if (priceRange === '3000-3999') {
+        priceCriteria = { price: { $gte: 3000, $lte: 3999 } };
+      }
+  
+      // Query products based on the price criteria
+      const products = await Product.find(priceCriteria);
+  
+      // Pass the price range and products to the template
+      res.render('user/product', { title: 'page', product: products, user, priceRange });
+    } catch (error) {
+      console.log(error);
     }
-    
-}
+  };
+  
 
 const shopCart=async (req,res)=>{
 

@@ -80,17 +80,22 @@ const userSchema=mongoose.Schema({
         }
     ],
     wallet: {
-
         balance: {
-            type: Number,
-      default: 0
+          type: Number,
+          default: 0
         },
-        transactions: {
-            transactionDescription:{type:String},
-            Date:{type:Date}
-        }
-
-    },
+        transactions: [
+          {
+            transactionDescription: {
+              type: String
+            },
+            date: {
+              type: Date,
+              default: Date.now
+            }
+          }
+        ]
+      },
       
    
     usedCoupons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Coupon' }],

@@ -144,10 +144,12 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <div class="input-group input-group-outline">
-              <label class="form-label">Type here...</label>
-              <input type="text" class="form-control">
-            </div>
+            <form method="GET" action="/admin/product">
+              <input type="text" name="search" placeholder="Search products" value="<%= search || '' %>">
+              <button type="submit">Search</button>
+            </form>
+            
+            
           </div>
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
@@ -317,115 +319,95 @@
       </div>
       <div class="modal-body">
         <form id="productForm" action="/admin/addProduct" method="post" enctype="multipart/form-data">
-          <div class="form-group">
-            <label for="imageInput" class="btn btn-danger">Select Images:</label>
-            <input type="file" class="form-control mb-2" name="images" multiple>
-          </div>
-
-          <div class="form-group d-flex flex-wrap justify-content-around mb-2">
-            <input type="text" required style="width: 30%;" class="form-control mb-2" name="title" id="titleInput" placeholder="Title">
-            <input type="text" required class="form-control mb-2" name="price" placeholder="Price">
-            <input type="text" required class="form-control mb-2" name="color" id="colorInput" placeholder="Color">
-            <input type="number" required class="form-control mb-2" id="quantity" name="stock" placeholder="Stock" min="1" max="500">
-          </div>
-
-
-          <div class="form-group d-flex justify-content-evenly">
-            <h6>Select Gender:</h6>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" required id="male" value="M"
-                onclick="showCategory('male')">
-              <label class="form-check-label" for="male">Male</label>
+            <div class="form-group">
+                <label for="imageInput" class="btn btn-danger">Select Images:</label>
+                <input type="file" class="form-control mb-2" name="images" multiple>
             </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="radio" name="gender" required id="female" value="F"
-                onclick="showCategory('female')">
-              <label class="form-check-label" for="female">Female</label>
+    
+            <div class="form-group d-flex flex-wrap justify-content-around mb-2">
+                <input type="text" required style="width: 30%;" class="form-control mb-2" name="title" id="titleInput" placeholder="Title">
+                <input type="text" required class="form-control mb-2" name="price" placeholder="Price">
+                <input type="text" required class="form-control mb-2" name="color" id="colorInput" placeholder="Color">
+                <input type="number" required class="form-control mb-2" id="quantity" name="stock" placeholder="Stock" min="1" max="500">
             </div>
-          </div>
-          <div class="d-flex justify-content-center align-content-center mb-3">
-            <div class="form-group justify-content-center" id="categoryContainer" style="display:none;">
-              
-                <label>Select Category:</label>
-                <select class="form-control" id="" name="category">
-                <!-- Male Categories -->
-                
-                <% if (maleCategory && maleCategory.subcategories && maleCategory.subcategories.length > 0) { %>
-                  <% maleCategory.subcategories.forEach(subcategory => { %>
-                
-                
-                      <option value="<%= subcategory.name %>"><%=subcategory.name%></option>
-                
-                
-                  <% }); %>
-                <% } else { %>
-                  No subcategories available for male.
-                <% } %>
-
-            </select>
+    
+            <div class="form-group d-flex justify-content-evenly">
+                <h6>Select Gender:</h6>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" required id="male" value="M" onclick="showCategory('male')">
+                    <label class="form-check-label" for="male">Male</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="gender" required id="female" value="F" onclick="showCategory('female')">
+                    <label class="form-check-label" for "female">Female</label>
+                </div>
             </div>
-            <div class="form-group" id="categoryContainerFemale" style="display: none;">
-              <label>Select Category:</label>
-              <select class="form-control" id="orderStatus">
-              <!-- Female Categories -->
-
-              
-              <% if (femaleCategory && femaleCategory.subcategories && femaleCategory.subcategories.length > 0) { %>
-                <% femaleCategory.subcategories.forEach(subcategory => { %>
-                  <div>
-                  
-                    
-                      <option value="<%= subcategory.name %>"><%=subcategory.name%></option>
-                      
-                                     
-                  </div>
-                <% }); %>
-              <% } else { %>
-                No subcategories available for female.
-              <% } %>
-            </select>
+    
+            <div class="d-flex justify-content-center align-content-center mb-3">
+                <div class="form-group justify-content-center" id="categoryContainer" style="display:none;">
+                    <label>Select Category:</label>
+                    <select class="form-control" id="categoryMale" name="category">
+                        <!-- Male Categories -->
+                        <% if (maleCategory && maleCategory.subcategories && maleCategory.subcategories.length > 0) { %>
+                        <% maleCategory.subcategories.forEach(subcategory => { %>
+                        <option value="<%= subcategory.name %>" name="category"><%= subcategory.name %></option>
+                        <% }); %>
+                        <% } else { %>
+                        No subcategories available for male.
+                        <% } %>
+                    </select>
+                </div>
+                <div class="form-group" id="categoryContainerFemale" style="display: none;">
+                    <label>Select Category:</label>
+                    <select class="form-control" id="categoryFemale" name="categoryFemale">
+                        <!-- Female Categories -->
+                        <% if (femaleCategory && femaleCategory.subcategories && femaleCategory.subcategories.length > 0) { %>
+                        <% femaleCategory.subcategories.forEach(subcategory => { %>
+                        <option value="<%= subcategory.name %>" name="categoryFemale"><%= subcategory.name %></option>
+                        <% }); %>
+                        <% } else { %>
+                        No subcategories available for female.
+                        <% } %>
+                    </select>
+                </div>
             </div>
-          </div>
-
-
-
-          <div class="form-group d-flex justify-content-center">
-            <h6 class="mt-1">Size:</h6>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="size" id="option1" value="S">
-              <label class="form-check-label" for="option1">S</label>
+    
+            <div class="form-group d-flex justify-content-center">
+                <h6 class="mt-1">Size:</h6>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="size" id="option1" value="S">
+                    <label class="form-check-label" for="option1">S</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="size" id="option2" value="M">
+                    <label class="form-check-label" for="option2">M</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="size" id="option3" value="L">
+                    <label class="form-check-label" for="option3">L</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="size" id="option4" value="XL">
+                    <label class="form-check-label" for="option4">XL</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="size" id="option5" value="XXL">
+                    <label class="form-check-label" for="option5">XXL</label>
+                </div>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="size" id="option2" value="M">
-              <label class="form-check-label" for="option2">M</label>
+    
+            <div class="d-flex justify-content-center mb-2">
+                <textarea rows="1" cols="25" name="description" class="form-control" placeholder="Description"></textarea>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="size" id="option3" value="L">
-              <label class="form-check-label" for="option3">L</label>
+    
+            <div class="modal-footer p-1 m-0 d-flex justify-content-evenly">
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="size" id="option4" value="XL">
-              <label class="form-check-label" for="option4">XL</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="size" id="option5" value="XXL">
-              <label class="form-check-label" for="option5">XXL</label>
-            </div>
-          </div>
-         
-            <!-- Checkbox inputs for size -->
-            <!-- Add your checkbox inputs here -->
-          </div>
-
-          <div class="d-flex justify-content-center mb-2">
-            <textarea rows="1" cols="25" name="description" class="form-control" placeholder="Description"></textarea>
-          </div>
-
-          <div class="modal-footer p-1 m-0 d-flex justify-content-evenly">
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </div>
         </form>
-      </div>
+    </div>
+    
+
+          
     </div>
   </div>
 </div>
@@ -592,33 +574,57 @@
         </div>  
         <div class="container">
           <h2>ADD CATEGORY</h2>
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Male</th>
-                <th>Female</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% maleCategory.subcategories.forEach(subcategory => { %>
-                
-                
-                <td><%=subcategory.name%></td>
-
-          
-          
-            <% }); %>
-            <% femaleCategory.subcategories.forEach(subcategory => { %>
-                
-                
-              <td><%=subcategory.name%></td>
-              
-        
-        
-          <% }); %>
-            </tbody>
-          </table>
+          <div class="row">
+            <div class="col-md-6">
+              <h3>Male Category</h3>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Subcategory</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% maleCategory.subcategories.forEach(subcategory => { %>
+                    <tr>
+                      <td><%= subcategory.name %></td>
+                      <td>
+                        <button class="btn btn-warning" onclick="unlistCategory('<%= subcategory._id %>')">Unlist</button>
+                        <button class="btn btn-success" onclick="listCategory('<%= subcategory._id %>')">List</button>
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+            <div class="col-md-6">
+              <h3>Female Category</h3>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Subcategory</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% femaleCategory.subcategories.forEach(subcategory => { %>
+                    <tr>
+                      <td><%= subcategory.name %></td>
+                      <td>
+                        <a class="btn btn-warning" href="unlistCategory('<%= subcategory._id %>')">Unlist</a>
+                        <a class="btn btn-success" href="listCategory('<%= subcategory._id %>')">List</a>
+                        
+                      </td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
+        
+             
+        
         <!-- end of add product -->
      
       <footer class="footer py-4  ">

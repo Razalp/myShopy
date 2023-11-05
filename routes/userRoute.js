@@ -891,6 +891,13 @@ router.post('/checkOut', async (req, res) => {
             productdata.stock -= quantity;
             await productdata.save();
           }
+          console.log(user.wallet.balance)
+          const transactionDescription = `Debited ${amountToPay} into your orderHistory`
+    
+          user.wallet.transactions.push({
+            transactionDescription: transactionDescription,
+            date: new Date()
+          });
     
           await user.save(); // Save the updated wallet balance
     
@@ -1053,18 +1060,36 @@ router.post("/ordersHistory/:orderId/change-status", async (req, res) => {
       const userId = order.customer;
       console.log(order.totalAmount)
       const user = await User.findById(userId);
-      user.wallet.balance += parseInt(order.totalAmount);
-      const totalAmounts=order.totalAmount
-      user.markModified('wallet');
+    
+      // Create a new wallet field if it doesn't exist
+      if (!user.wallet) {
+        user.wallet = {
+          balance: 0,
+          transactions: [],
+        };
+      }
+    
       console.log(user.wallet.balance)
-      const transactionDescription = `Credited ${totalAmounts} into your orderHistory`
-      const OrderId='1234'
-      user.wallet.transactions.push({ OrderId });
-      user.wallet.history.push({
-        transition: transactionDescription,
+    
+      user.wallet.balance += parseInt(order.totalAmount);
+      console.log(user);
+    
+      const totalAmount = order.totalAmount;
+    
+      console.log(user);
+    
+      // Create a transaction object
+      const transaction = {
+        //    // You should have orderId defined somewhere in your code
+        transactionDescription: `Credited ${totalAmount} into your orderHistory`,
         date: new Date()
-      });
-      console.log(user.wallet)
+      };
+    
+      // Push the transaction into the transactions array
+      user.wallet.transactions.push(transaction);
+      console.log(user.wallet);
+    
+      // Save the updated user object to the database
       await user.save();
     }
     res.status(200).redirect('/orderHistory')

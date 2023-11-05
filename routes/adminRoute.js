@@ -67,6 +67,27 @@ adminRouter.post('/editUser/:id', adminControl.editUser);
 
 adminRouter.post('/logout',adminControl.destroySession)
 
+adminRouter.post('/unlist-subcategory/:subcategoryId', async (req, res) => {
+  try {
+    const subcategory = await subcategoryModel.findById(req.params.subcategoryId);
+
+    if (!subcategory) {
+      return res.status(404).json({ message: 'Subcategory not found' });
+    }
+
+    // Set the 'unlisted' flag to true
+    subcategory.unlisted = true;
+
+    // Save the updated subcategory
+    await subcategory.save();
+
+    res.json({ message: 'Subcategory has been unlisted' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 adminRouter.post('/deleteUser', async (req, res) => {
   try {
     // Assuming you have a unique identifier for the user, e.g., their ID
@@ -320,7 +341,7 @@ adminRouter.post("/orders/:orderId/change-status", async (req, res) => {
 
 
 
-adminRouter.get('/sales',async (req, res) => {
+adminRouter.get('/sales', async (req, res) => {
   const from = req.query.from;
   const to = req.query.to;
   let salesReport;
@@ -352,12 +373,11 @@ adminRouter.get('/sales',async (req, res) => {
       { $sort: { "order_id": -1 } }
     ];
 
-
     // Check if a date range is provided
     if (from && to) {
       const fromDate = new Date(from);
       const toDate = new Date(to);
-      
+
       // Add a $match stage to filter by date range
       pipeline.push({
         $match: {
@@ -368,45 +388,18 @@ adminRouter.get('/sales',async (req, res) => {
         }
       });
     }
-    
+
     // Execute the aggregation query
     salesReport = await Order.aggregate(pipeline);
-    
-    console.log(salesReport,"iiiiiiiiiiiiiii")
-    res.render("admin/salesReport", { salesReport });
+
+    // Pass the date filter values to the template
+    res.render("admin/salesReport", { salesReport, from, to });
 
   } catch (e) {
-    console.log(e.massage + "this is admin sales where some mistakes ")
+    console.log(e.message + "this is admin sales where some mistakes ");
   }
 });
-adminRouter.post('/salesDownload', async (req, res) => {
-  try {
-    const data = req.body;
-    console.log(req.body);
-    let file = [];
-    for (let i = 0; i < data.date.length; i++) {
-      // Create an object with all fields, ensuring they are not undefined or empty
-      const row = {
-        date: data.date[i] || '', // Handle empty or undefined date
-        order_id: data.order_id[i] || '', // Handle empty or undefined order_id
-        product: data.product[i] || '', // Handle empty or undefined product
-        qty: data.qty[i] || '', // Handle empty or undefined qty
-        payment: data.payment[i] || '', // Handle empty or undefined payment
-        amount: data.amount[i] || '', // Handle empty or undefined amount
-      };
-      file.push(row);
-    }
-    console.log(file);
-    const json2csv = new Parser();
-    const csv = json2csv.parse(file);
 
-    res.attachment(`report-${Date.now()}.csv`);
-    res.status(200).send(csv);
-  } catch (error) {
-    console.log(error.message);
-    res.status(500).send(error.message); // Send the error message
-  }
-});
 
 
 

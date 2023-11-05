@@ -6,6 +6,10 @@ const subcategorySchema=mongoose.Schema({
         type:String,
         required:true
     },
+    unlisted: {
+        type: Boolean,
+        default: false,
+      },
     parentcategoty:{
         type:{
             type:mongoose.Schema.Types.ObjectId,

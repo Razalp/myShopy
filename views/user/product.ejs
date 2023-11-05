@@ -342,19 +342,33 @@
 
 				<!-- Filter -->
 				<div>
-					<form id="filterForm" action="/product" method="get">
-						<div class="form-group">
-							<label for="price_range">Price Range:</label>
-							<select class="form-control" id="price_range" name="price_range" onchange="submitPriceRange()">
-								<option value="all">All</option>
-								<option value="0-999">0-999</option>
-								<option value="1000-1999">1000-1999</option>
-								<option value="2000-2999">2000-2999</option>
-								<option value="3000-3999">3000-3999</option>
-							</select>
-						</div>
-					</form>
-				</div>
+					  
+					<div class="container mt-5">
+						<form method="get" action="/product" class="form-inline">
+							<div class="form-group">
+								<label for="priceRange">Select Price Range:</label>
+								<select class="form-control" name="priceRange" id="priceRange">
+									<option value=""<%=priceRange === '' ? ' selected' : ''%>>All</option>
+									<option value="0-999"<%=priceRange === '0-999' ? ' selected' : ''%>>0-999</option>
+									<option value="1000-1999"<%=priceRange === '1000-1999' ? ' selected' : ''%>>1000-1999</option>
+									<option value="2000-2999"<%=priceRange === '2000-2999' ? ' selected' : ''%>>2000-2999</option>
+									<option value="3000-3999"<%=priceRange === '3000-3999' ? ' selected' : ''%>>3000-3999</option>
+								</select>
+							</div>
+							<button type="submit" class="btn btn-primary">Apply Filter</button>
+						</form>
+					</div>
+					  
+					  <ul>
+						<% product.forEach(item => { %>
+						  <li><%= item.name %></li>
+						  <!-- Add other product details as needed -->
+						<% }); %>
+					  </ul>
+					  
+
+</div>
+
 				<div class="dis-none panel-filter w-full p-t-10">
 					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
 						
@@ -363,56 +377,47 @@
 				</div>
 			</div>
 			
-			<%if(product){%>
-				
-				
+			<% if (product && product.length > 0) { %>
 				<div class="row isotope-grid">
-				<% for (let i=0; i < product.length; i++) { %>
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
-					<!-- Block2 -->
-					<div class="block2">
-					
-						<div class="block2-pic hov-img0">
-							 <img src="/upload/<%= product[i].images[0] %>" alt="IMG-PRODUCT">
-
-							 <a href="/productView/<%= product[i]._id %>"
-								class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
-								Quick View
-							 </a>
-						</div>
-
-						<div class="block2-txt flex-w flex-t p-t-14">
-							<div class="block2-txt-child1 flex-col-l ">
-								<a href="/upload/<%= product[i].images[0] %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-									<%=product[i].title%>
-								</a>
-
-								<span class="stext-105 cl3">
-									<%=product[i].price%>
-								</span>
+					<% for (let i = 0; i < product.length; i++) { %>
+						<% if (!product[i].deleted) { %>
+							<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+								<!-- Block2 -->
+								<div class="block2">
+									<div class="block2-pic hov-img0">
+										<img src="/upload/<%= product[i].images[0] %>" alt="IMG-PRODUCT">
+										<a href="/productView/<%= product[i]._id %>"
+										   class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<a href="/upload/<%= product[i].images[0] %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+												<%= product[i].title %>
+											</a>
+											<span class="stext-105 cl3">
+												<%= product[i].price %>
+											</span>
+										</div>
+										<div class="block2-txt-child2 flex-r p-t-3">
+											<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+												<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png"
+													alt="ICON">
+												<img class="icon-heart2 dis-block trans-04 ab-t-l"
+													src="images/icons/icon-heart-02.png" alt="ICON">
+											</a>
+										</div>
+									</div>
+								</div>
 							</div>
-
-							<div class="block2-txt-child2 flex-r p-t-3">
-								<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-									<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png"
-										alt="ICON">
-									<img class="icon-heart2 dis-block trans-04 ab-t-l"
-										src="images/icons/icon-heart-02.png" alt="ICON">
-								</a>
-							</div>
-						</div>
-					</div>
+						<% } %>
+					<% } %>
 				</div>
-
-
-
-
-				
-
-				
-				<%}%>
-			</div>
-			<%}%>
+			<% } else { %>
+				<h1>Product is not available at price range <%= priceRange %></h1>
+			<% } %>
+			
 
 					
 			<!-- Load more -->
@@ -816,23 +821,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	
 	</script>
 
-		<script>
-    function submitPriceRange() {
-        const priceRangeSelect = document.getElementById('price_range');
-        const selectedPriceRange = priceRangeSelect.value;
-        // Assuming you have a form with the id 'filterForm' that contains the price_range select
-        const filterForm = document.getElementById('filterForm');
-        // Set the selected price range as a hidden input field value
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = 'price_range';
-        hiddenInput.value = selectedPriceRange;
-        filterForm.appendChild(hiddenInput);
-        // Submit the form
-        filterForm.submit();
-    }
-</script>
-
+		
 <!--===============================================================================================-->
 	<script src="/vendor/perfect-scrollbar/perfect-scrollbar.min.js"></script>
 	<script>

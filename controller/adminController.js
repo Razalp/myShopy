@@ -21,58 +21,59 @@ const adminPage=async(req,res)=>{
 
 const product = async (req, res) => {
   try {
-      if (req.session.admin) {
-          const page = parseInt(req.query.page) || 1;
-          const perPage = 3; // Display 3 products per page
-          const skip = (page - 1) * perPage;
+    if (req.session.admin) {
+      const page = parseInt(req.query.page) || 1;
+      const perPage = 3;
+      const skip = (page - 1) * perPage;
 
-          // Get the selected price range from the request
-          const priceRange = req.query.price_range;
-
-          let priceQuery = {}; // Initialize an empty query for price filtering
-
-          // Define price range filters based on the selected option
-          if (priceRange === "0-999") {
-              priceQuery = { price: { $gte: 0, $lte: 999 } };
-          } else if (priceRange === "1000-1999") {
-              priceQuery = { price: { $gte: 1000, $lte: 1999 } };
-          } else if (priceRange === "2000-2999") {
-              priceQuery = { price: { $gte: 2000, $lte: 2999 } };
-          } else if (priceRange === "3000-3999") {
-              priceQuery = { price: { $gte: 3000, $lte: 3999 } };
-          }
-
-          const productData = await products
-              .find(priceQuery) // Apply the price range filter
-              .sort({ _id: -1 })
-              .skip(skip)
-              .limit(perPage);
-
-          const totalPages = Math.ceil(await products.countDocuments(priceQuery) / perPage);
-
-          const maleCategory = await categoryModel
-              .findOne({ gender: "Male" })
-              .populate("subcategories");
-          const femaleCategory = await categoryModel
-              .findOne({ gender: "Female" })
-              .populate("subcategories");
-
-          res.render('admin/product', {
-              products: productData,
-              maleCategory,
-              femaleCategory,
-              page,
-              totalPages,
-              selectedPriceRange: priceRange, // Pass the selected price range to the view
-          });
-      } else {
-          res.redirect("/admin");
+      let query = {};
+      if (req.query.search) {
+        const searchRegex = new RegExp(escapeRegex(req.query.search), 'gi');
+        query = { title: searchRegex }; // Use "title" for the search query
       }
+
+      const productData = await products
+        .find(query)
+        .sort({ _id: -1 })
+        .skip(skip)
+        .limit(perPage);
+
+      const totalPages = Math.ceil(
+        await products.countDocuments(query) / perPage
+      );
+
+      const maleCategory = await categoryModel
+        .findOne({ gender: "Male" })
+        .populate("subcategories");
+      const femaleCategory = await categoryModel
+        .findOne({ gender: "Female" })
+        .populate("subcategories");
+
+      res.render('admin/product', {
+        products: productData,
+        maleCategory,
+        femaleCategory,
+        page,
+        totalPages,
+        selectedPriceRange: null,
+        search: req.query.search,
+      });
+    } else {
+      res.redirect("/admin");
+    }
   } catch (error) {
-      console.log(error.message);
-      res.status(500).send('server error');
+    console.log(error.message);
+    res.status(500).send('Server error');
   }
 };
+
+
+// Function to escape special characters in the search term for regex
+function escapeRegex(text) {
+  return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+}
+
+
 
     
 
