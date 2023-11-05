@@ -1200,7 +1200,7 @@ router.post('/rest-password',async (req, res) => {
       from: "razalp0012300@gmail.com",
       to: userEmail,
       subject: 'Password Reset Request',
-      text: `Click the following link to reset your password: http://localhost:3008/reset-password?token=${token}`
+      text: `Click the following link to reset your password: https://myshopyin.site/reset-password?token=${token}`
     };
 
     transport.sendMail(mailOptions, (error, info) => {
