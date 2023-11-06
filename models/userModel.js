@@ -94,7 +94,10 @@ const userSchema=mongoose.Schema({
               default: Date.now
             }
           }
-        ]
+        ],
+        cancelOrder:{
+            type:String,
+        }
       },
       
    

@@ -131,7 +131,7 @@
                 <% user.wallet.transactions.forEach(transaction => { %>
                   <tr>
                     <td><%= transaction.transactionDescription %></td>
-                    <td><%= transaction.date.toLocaleDateString() %></td>
+                    <td><%= transaction.date.toLocaleString() %></td>
                   </tr>
                 <% }) %>
               </tbody>

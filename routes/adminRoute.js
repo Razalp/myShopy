@@ -311,6 +311,9 @@ adminRouter.post("/orders/:orderId/change-status", async (req, res) => {
       console.log(user);
     
       const totalAmount = order.totalAmount;
+
+      const cancelReason = req.body.cancelReason; // Replace with the actual cancel reason
+
     
       console.log(user);
     
@@ -322,6 +325,7 @@ adminRouter.post("/orders/:orderId/change-status", async (req, res) => {
       };
     
       // Push the transaction into the transactions array
+      user.wallet.cancelOrder.push()
       user.wallet.transactions.push(transaction);
       console.log(user.wallet);
     
