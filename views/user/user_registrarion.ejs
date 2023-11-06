@@ -113,9 +113,12 @@
     }
 
     if (passwordInput.value.trim() === '') {
-      Swal.fire('Password is required');
-      isValid = false;
-    }
+  Swal.fire('Password is required');
+  isValid = false;
+} else if (/[^a-zA-Z0-9]/.test(passwordInput.value)) {
+  Swal.fire('Password cannot contain special characters');
+  isValid = false;
+}
 
     if (passwordInput.value !== confirm_password.value) {
       Swal.fire('Passwords do not match');

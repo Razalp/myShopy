@@ -231,18 +231,21 @@
     <!-- End Navbar -->
     <!-- table -->
     
+    <form action="/admin/sales" method="get" onsubmit="return validateForm()">
 
-     <form action="/admin/sales" method="get">
   <!-- Input fields for start and end dates -->
   <div class="form-row mb-2">
     <div class="col-md-4">
       <label for="from">Start Date:</label>
       <input type="date" class="form-control" id="from" name="from" value="<%= from %>" required>
+      <!-- Define the error message element -->
     </div>
     <div class="col-md-4">
       <label for="to">End Date:</label>
       <input type="date" class="form-control" id="to" name="to" value="<%= to %>" required min="<%= from %>">
+      <div id="ending-error" class="error-message"></div> <!-- Define the error message element -->
     </div>
+    
     <div class="col-md-4">
       <button type="submit" class="btn btn-primary">Apply Filter</button>
     </div>
@@ -650,22 +653,55 @@
       document.body.innerHTML = x; // Restore the original content
   }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const form = document.querySelector("form");
-    const fromDateInput = document.getElementById("from");
-    const toDateInput = document.getElementById("to");
+function validateForm() {
+  const startingDateInput = document.getElementById("from");
+  const startingError = document.getElementById("starting-error");
 
-    form.addEventListener("submit", function (event) {
-      const fromDate = new Date(fromDateInput.value);
-      const toDate = new Date(toDateInput.value);
+  function isDateValid(dateString) {
+    const regexPattern = /^\d{4}-\d{2}-\d{2}$/;
+    return regexPattern.test(dateString);
+  }
 
-      if (fromDate > toDate) {
-        alert("End date cannot be before the start date");
-        event.preventDefault(); // Prevent form submission if validation fails
-      }
-    });
-  });
+  function startingDateValidation() {
+    const value = startingDateInput.value;
+    const currentDate = new Date();
+
+    if (value === "") {
+      startingError.innerHTML = "Starting date is required";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Starting date is required",
+      });
+      return false;
+    } else if (!isDateValid(value)) {
+      startingError.innerHTML = "Date is not valid or does not match the format (YYYY-MM-DD).";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Date is not valid or does not match the format (YYYY-MM-DD).",
+      });
+      return false;
+    } else if (new Date(value) > currentDate) {
+      startingError.innerHTML = "Starting date must be a valid date in the past or today.";
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Starting date must be a valid date in the past or today.",
+      });
+      return false;
+    } else {
+      startingError.innerHTML = "";
+      return true;
+    }
+  }
+
+  // Call the validation function and return its result
+  return startingDateValidation();
+}
 </script>
 
   <!-- Github buttons -->
