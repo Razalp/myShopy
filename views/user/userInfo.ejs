@@ -102,11 +102,19 @@
               <!-- <p class="text-muted mb-1">Full Stack Developer</p>
               <p class="text-muted mb-4">Bay Area, San Francisco, CA</p> -->
               <div class="d-flex justify-content-center mb-2">
-               <a href="/orderHistory"> <button type="button" class="btn btn-info"> <i class="bx bx-shopping-bag">Orders </i></button></a>
-              <!-- Button trigger modal -->
-<button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
-  wallet History
-</button>
+                <div class="d-flex justify-content-between p-2">
+                  
+                  <a href="/orderHistory" class="btn btn-dark mr-2"> <!-- Added 'mr-2' class for margin -->
+                      <i class="bx bx-shopping-bag"></i> Orders
+                  </a>
+                  <div>
+                    .
+                  </div>
+                  <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                      Wallet History
+                  </button>
+              </div>
+              
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -248,6 +256,7 @@
               Remove Address
             </button>
           <% } %>
+         
           <br>
           <br>
           <form action="/logout" method="post">
@@ -287,15 +296,31 @@
           <!-- Input fields for editing address fields -->
           <div class="mb-3">
             <label for="editNewname" class="form-label">Name</label>
-            <input type="text" class="form-control" id="editNewname" name="newname" value="<%= user.address && user.address[0] ? user.address[0].newname : '' %>">
+            <input type="text" class="form-control" id="editNewname" name="newname" value=""" >
           </div>
           <div class="mb-3">
             <label for="editHouse" class="form-label">House</label>
-            <input type="text" class="form-control" id="editHouse" name="house" value="<%= user.address && user.address[0] ? user.address[0].house : '' %>">
+            <input type="text" class="form-control" id="editHouse" name="house" value="">
           </div>
           <div class="mb-3">
             <label for="editPost" class="form-label">Post</label>
-            <input type="text" class="form-control" id="editPost" name="post" value="<%= user.address && user.address[0] ? user.address[0].post : '' %>">
+            <input type="text" class="form-control" id="editPost" name="post" value="">
+          </div>
+          <div class="mb-3">
+            <label for="editPost" class="form-label">City</label>
+            <input type="text" class="form-control" id="editPost" name="post" value="">
+          </div>
+          <div class="mb-3">
+            <label for="editPost" class="form-label">State</label>
+            <input type="text" class="form-control" id="editPost" name="post" value="">
+          </div>
+          <div class="mb-3">
+            <label for="editPost" class="form-label">district</label>
+            <input type="text" class="form-control" id="editPost" name="post" value="">
+          </div>
+          <div class="mb-3">
+            <label for="editPost" class="form-label">contact</label>
+            <input type="text" class="form-control" id="editPost" name="post" value="">
           </div>
           <!-- Add input fields for other address fields here -->
         
@@ -403,6 +428,7 @@ function removeAddress() {
     </div>
   </section>
   <!-- Button trigger modal -->
+<!-- Button trigger modal -->
 
   <script>
     function validateForm() {

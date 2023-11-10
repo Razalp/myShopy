@@ -113,22 +113,11 @@ adminRouter.post('/deleteUser', async (req, res) => {
   }
 });
 
-//product meela oru get nd
-adminRouter.post('/addProduct',upload.array('images',5),async (req,res)=>{
-  try{
-    console.log(req.body);
-    const{
-      title,
-      color,
-      gender,
-      category,
-      size,
-      price,
-      stock,
-      description
-    }=req.body;
-    const images=req.files.map((file)=>file.filename);
-    const newProduct=new Product({
+
+  adminRouter.post('/addProduct',upload.array('images',5),async (req,res)=>{
+    try{
+      console.log(req.body);
+      const{
         title,
         color,
         gender,
@@ -136,17 +125,28 @@ adminRouter.post('/addProduct',upload.array('images',5),async (req,res)=>{
         size,
         price,
         stock,
-        images,
         description
-    });
-    await newProduct.save();
-    console.log("product is saved:" + newProduct)
-    res.redirect('/admin/product')
-    }catch(error){
-      console.log("error product saving :" + error.message);
-      res.status(500).send('an error occurred while save product')
-    }
-  })
+      }=req.body;
+      const images=req.files.map((file)=>file.filename);
+      const newProduct=new Product({
+          title,
+          color,
+          gender,
+          category,
+          size,
+          price,
+          stock,
+          images,
+          description
+      });
+      await newProduct.save();
+      console.log("product is saved:" + newProduct)
+      res.redirect('/admin/product')
+      }catch(error){
+        console.log("error product saving :" + error.message);
+        res.status(500).send('an error occurred while save product')
+      }
+    })
 
 
 adminRouter.post('/deleteProduct/:id', async (req, res) => {
@@ -403,12 +403,6 @@ adminRouter.get('/sales', async (req, res) => {
     console.log(e.message + "this is admin sales where some mistakes ");
   }
 });
-
-
-
-
-
-
 
 
 

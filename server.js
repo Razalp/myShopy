@@ -2,7 +2,7 @@
 const express=require("express");
 const app=express();
 const path=require('path');
-const port=process.env.PORT||3008
+const port=process.env.PORT||3000
 const session = require('express-session');
 const { v4: uuidv4 } = require('uuid'); // Import the uuidv4 function
 const nocache =require('nocache');
@@ -45,7 +45,9 @@ app.use(session({
 
 app.use('/',userRouter)
 app.use('/admin',adminRouter)
-
+app.use((req,res,next)=>{
+  res.status(404).render('user/errorPage')
+})
 app.listen(port,()=>{
     console.log(`server is running http://localhost:${port}`)
 })

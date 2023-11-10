@@ -94,6 +94,13 @@ router.post('/login', async (req, res) => {
 
 
 
+  router.get("/orderSuccess",(req,res)=>{
+    if(req.session.user){
+    res.render('user/successPage')
+    }else{
+      res.redirect('/')
+    }
+  })
 
 
 router.post("/logout",async (req,res) => {
@@ -803,8 +810,9 @@ router.post('/checkOut', async (req, res) => {
         productdata.stock -= quantity;
         await productdata.save();
       }
-
+      
       res.json({ codSuccess: true });
+      
     } else if (payment === 'ONLINE') {
       console.log(req.body);
       // for online payment
@@ -834,13 +842,14 @@ router.post('/checkOut', async (req, res) => {
             contact: addresses.contact,
             email: email,
           });
+          res.redirect('/orderSuccess');
         } else {
           console.log('error occurred');
           console.error('Razorpay Error:', err);
           res.status(400).send({ razorSuccess: false, msg: 'Error creating order with Razorpay' });
         }
       });
-    } // Existing code...
+    }
 
     else if (payment === 'wallet') {
       const email = req.session.user;
@@ -902,6 +911,7 @@ router.post('/checkOut', async (req, res) => {
           await user.save(); // Save the updated wallet balance
     
           res.json({ codSuccess: true });
+
         } else {
           console.log('Insufficient balance in the wallet');
           res.status(400).json({ walletSuccess: false, message: 'Insufficient balance in the wallet' });
@@ -1327,7 +1337,6 @@ router.post('/applyCoupon',async (req, res) => {
   }
 }
   )
-
 
 
 

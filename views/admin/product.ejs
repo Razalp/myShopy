@@ -36,7 +36,7 @@
   <link id="pagestyle" href="/admin_assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
 </head>
 <style>
-  .gender-selection {
+   .gender-selection {
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -59,7 +59,7 @@
 .gender-selection input[type="radio"]:checked + label {
   font-weight: bold;
   color: #007bff; /* Change color to your preference */
-}
+} */
 </style>
 <body class="g-sidenav-show  bg-gray-200">
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
@@ -144,13 +144,12 @@
         </nav>
         <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-            <form method="GET" action="/admin/product">
-              <input type="text" name="search" placeholder="Search products" value="<%= search || '' %>">
-              <button type="submit">Search</button>
+            <form method="GET" action="/admin/product" class="d-flex align-items-center">
+                <input type="text" name="search" class="form-control me-2" placeholder="Search products" value="<%= search || '' %>">
+                <button type="submit" class="btn btn-primary">☑️</button>
             </form>
-            
-            
-          </div>
+        </div>
+        
           <ul class="navbar-nav  justify-content-end">
             <li class="nav-item d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body font-weight-bold px-0">
