@@ -2,7 +2,7 @@
 const express=require("express");
 const app=express();
 const path=require('path');
-const port=process.env.PORT||3000
+const port=3000
 const session = require('express-session');
 const { v4: uuidv4 } = require('uuid'); // Import the uuidv4 function
 const nocache =require('nocache');
