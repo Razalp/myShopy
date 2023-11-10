@@ -276,6 +276,9 @@
       </thead>
 
       <tbody>
+        <%if(salesReport.length===0){%>
+          <tr><h1> not sales in </h1></tr>
+          <%}%>
         <% salesReport.forEach((sale) => { %>
         <tr>
           <td><%= sale.order_date.toLocaleDateString() %> </td>
