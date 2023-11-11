@@ -142,18 +142,17 @@
             <!-- Product Images -->
             <div class="col-md-6">
                 <div class="image-container mt-5">
-                    
-                    <div class="semi-image-container mr-1">
+                    <div class="semi-image-container mr-1 d-flex">
                         <% for (let i = 0; i < product.images.length; i++) { %>
-                            <img src="/upload/<%= product.images[i] %>" alt="Product Image" class="semi-image" data-index="<%= i %>">
+                            <img src="/upload/<%= product.images[i] %>" alt="Product Image" class="semi-image mr-1" data-index="<%= i %>">
                         <% } %>
                     </div>
                     <div class="main-image-container">
                         <img src="" alt="Main Product Image" class="main-image image-to-zoom">
-                
                     </div>
                 </div>
-                <button id="zoomToggle" class="btn btn-warning">Enable Zoom</button>
+                <button id="zoomToggle" class="btn btn-warning mt-2">Enable Zoom</button>
+                
             </div>
             
 

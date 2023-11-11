@@ -300,7 +300,7 @@
                     text: 'Thank you for your order.',
                     confirmButtonText: 'OK'
                 });
-    
+                window.location.href = 'orderSuccess'; // Add this line
                     } else if (res.razorSuccess) {
 
 
@@ -351,7 +351,7 @@
                 .then((response) => {
                     if (response.ok) {
                         // Handle success, e.g., show a modal or redirect
-                        window.location.href = ''
+                        window.location.href = 'orderSuccess'
                     } else {
                         // Handle error
                         console.error("Payment verification failed");
